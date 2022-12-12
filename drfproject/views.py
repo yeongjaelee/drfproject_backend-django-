@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 # Create your views here.
 
 from rest_framework import status
@@ -7,9 +5,26 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 
-from .serializers import ReviewSerializer
-from .models import Review
+from .models.boardlist import BoardList
+from .serializers import ReviewSerializer, BoardSerializer
+from drfproject.models.models import Review
 
+
+class Board(APIView):
+    def post(self, request):
+        print('here is the post')
+        serializer = BoardSerializer(
+            data=request.data
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        boards = BoardList.objects.all()
+        serializer = BoardSerializer(boards, many=True)
+        return Response(serializer.data)
 class ReviewList(APIView):
     def get(self, request):
         reviews = Review.objects.all()
@@ -26,6 +41,9 @@ class ReviewList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 class ReviewDetail(APIView):
     def get_object(self, pk):
@@ -52,3 +70,5 @@ class ReviewDetail(APIView):
         review = self.get_object(pk)
         review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
