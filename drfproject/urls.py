@@ -9,6 +9,7 @@ urlpatterns = [
     path('review/', ReviewList.as_view()),
     path('board/<int:board_id>/', BoardDelete.as_view()),
     path('board/', Board.as_view()),
+    path('board/<int:board_id>/<str:new_title>/<str:new_content>', BoardDelete.as_view())
 ]
 
 

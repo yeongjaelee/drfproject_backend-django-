@@ -9,12 +9,23 @@ from .models.boardlist import BoardList
 from .serializers import ReviewSerializer, BoardSerializer
 from drfproject.models.models import Review
 
+
 class BoardDelete(APIView):
     def delete(self, request, board_id):
         print('delete')
         board = BoardList.objects.get(pk=board_id)
         board.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def put(self, request, board_id, new_title, new_content):
+        print('update')
+        print(new_title)
+        print(new_content)
+        board = BoardList.objects.get(pk=board_id)
+        board.title = new_title
+        board.content = new_content
+        board.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
 
 class Board(APIView):
     def post(self, request):
@@ -49,6 +60,9 @@ class ReviewList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 
